@@ -1,0 +1,12 @@
+CREATE TABLE people (
+  id VARCHAR(50) PRIMARY KEY,
+  label VARCHAR(50),
+  nationality VARCHAR(50),
+  year_of_birth VARCHAR(50),
+  image_url VARCHAR(255)
+);
+
+CREATE TABLE nationalities (
+    id SERIAL PRIMARY KEY,
+    nationality nationality VARCHAR(50) NOT NULL
+);

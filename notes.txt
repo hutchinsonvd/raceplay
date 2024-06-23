@@ -1,0 +1,7 @@
+PGUSER=raceplay_user PGPASSWORD=HvZhjXOrYBVXXmiCaCCo1zShsasn8Nqq PGHOST=dpg-cpmuli6ehbks73fvf8qg-a.ohio-postgres.render.com PGPORT=5432 PGDATABASE=raceplay node postgres.js
+
+
+  PGPASSWORD=HvZhjXOrYBVXXmiCaCCo1zShsasn8Nqq psql -h dpg-cpmuli6ehbks73fvf8qg-a.ohio-postgres.render.com -U raceplay_user raceplay
+
+
+  //fuck it ill use react goddamit
