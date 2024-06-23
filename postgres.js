@@ -6,7 +6,7 @@ const { Client } = pg
 
 const client = new Client({
     connectionString: process.env.PGCONNECTIONSTRING,
-ssl:true})
+ssl:false})
 
     try {
         await client.connect()
