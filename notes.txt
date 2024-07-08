@@ -4,4 +4,8 @@ PGUSER=raceplay_user PGPASSWORD=HvZhjXOrYBVXXmiCaCCo1zShsasn8Nqq PGHOST=dpg-cpmu
   PGPASSWORD=HvZhjXOrYBVXXmiCaCCo1zShsasn8Nqq psql -h dpg-cpmuli6ehbks73fvf8qg-a.ohio-postgres.render.com -U raceplay_user raceplay
 
 
-  //fuck it ill use react goddamit
+//react is nice af
+
+//ok so get the difficulty buttons going
+
+//load up nationalities when the choice changes!
