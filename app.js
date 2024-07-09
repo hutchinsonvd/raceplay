@@ -21,10 +21,10 @@ app.use(function (req, res, next) {
   //Here you would check for the user being authenticated
 
   //Unsure how you're actually checking this, so some psuedo code below
-  if (SECRET != req.headers["authorization"]) {
+  if (SECRET != req.headers["Authorization"]) {
     res.sendStatus(401);
 
-    console.log("not authed " + SECRET + " vs " + req.headers["authorization"]);
+    console.log("not authed " + SECRET + " vs " + req.headers["Authorization"]);
     console.log(req.headers);
 
     return;
