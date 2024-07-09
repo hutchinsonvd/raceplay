@@ -24,7 +24,7 @@ app.use(function (req, res, next) {
   if (SECRET != req.headers["authorization"]) {
     res.sendStatus(401);
 
-    console.log("not authed");
+    console.log("not authed " + SECRET + " vs " + req.headers["authorization"]);
 
     return;
   }
