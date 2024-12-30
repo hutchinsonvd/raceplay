@@ -20,12 +20,14 @@ export async function isSameRegion(candidateNation, actualNation) {
     const baseQuery = "SELECT region FROM nationalities WHERE nationality = $1 OR nationality = $2"
     return await client.query(baseQuery, [candidateNation, actualNation])
     .then(result => {
-        if (null == result || null == result.rows || 2 != result.rowCount) {
+        if (null == result || null == result.rows || 0 == result.rows.length) {
+            console.error("Error checking if regions were same: " + actualNation + " vs " + candidateNation)
+
             return false;
         }
 
-        console.log(result.rows[0].region)
-        console.log(result.rows[1].region)
+        console.debug(result.rows[0].region)
+        console.debug(result.rows[1].region)
 
         return result.rows[0].region == result.rows[1].region
     })

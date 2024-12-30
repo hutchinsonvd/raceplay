@@ -7,8 +7,8 @@ import {isSameRegion, getRandomPerson, getHardNationalities, getMediumNationalit
 const app = express();
 const port = process.env.PORT || 8080;
 
-//const SECRET = process.env.SECRET; //for prod only
-const SECRET = "SECRET";
+const SECRET = process.env.SECRET; //for prod only
+//const SECRET = "SECRET";
 
 
 app.use(cors())
@@ -34,7 +34,6 @@ app.use(function (req, res, next) {
 });
 
   app.post('/region', async function (req, res) {
-    
     
     await isSameRegion(req.body.candidate, req.body.actual).then(response => res.send(response));
   });
