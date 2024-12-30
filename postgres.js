@@ -107,7 +107,7 @@ export async function getEasyNationalities(person) {
 
 export async function getHelterNationalities(person, score) {
 
-    var numToReturn = Math.pow(2, score);
+    var numToReturn = Math.pow(2, score / 5);
 
     if (numToReturn > 9) {
         numToReturn = 9;
