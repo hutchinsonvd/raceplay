@@ -1,16 +1,14 @@
 import express from 'express'
 import cors from 'cors'
 import path from'path';
-import { getRandomPerson, getHardNationalities, getMediumNationalities, getEasyNationalities, getHelterNationalities } from './postgres.js';
-
-const __dirname = path.resolve(path.dirname('')); 
+import {isSameRegion, getRandomPerson, getHardNationalities, getMediumNationalities, getEasyNationalities, getHelterNationalities } from './postgres.js';
 
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-const SECRET = process.env.SECRET;
-//const SECRET = "SECRET";
+//const SECRET = process.env.SECRET; //for prod only
+const SECRET = "SECRET";
 
 
 app.use(cors())
@@ -34,6 +32,12 @@ app.use(function (req, res, next) {
     next();
   }
 });
+
+  app.post('/region', async function (req, res) {
+    
+    
+    await isSameRegion(req.body.candidate, req.body.actual).then(response => res.send(response));
+  });
 
   app.get('/random', async function(req, res) {
 
@@ -72,9 +76,13 @@ app.use(function (req, res, next) {
     .then(response => res.send(response));
   });
 
-//   app.get('/postgres', function(req, res) {
-//     res.sendFile(path.join(__dirname, '/postgres.js'));
-//   });
 
-app.listen(port);
+try {
+  app.listen(port);
+} catch (error) {
+
+  console.log("error listening to port")
+  throw Error(error)
+}
+
 console.log('Server started at http://localhost:' + port);

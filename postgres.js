@@ -6,14 +6,30 @@ const { Client } = pg
 
 const client = new Client({
     connectionString: process.env.PGCONNECTIONSTRING,
-ssl:false})
-//ssl:true})
+    //ssl:false})
+ssl:true})
 
     try {
         await client.connect()
     } catch (error) {
         console.log(error);
     }
+
+export async function isSameRegion(candidateNation, actualNation) {
+
+    const baseQuery = "SELECT region FROM nationalities WHERE nationality = $1 OR nationality = $2"
+    return await client.query(baseQuery, [candidateNation, actualNation])
+    .then(result => {
+        if (null == result || null == result.rows || 2 != result.rowCount) {
+            return false;
+        }
+
+        console.log(result.rows[0].region)
+        console.log(result.rows[1].region)
+
+        return result.rows[0].region == result.rows[1].region
+    })
+}
 
 export async function getRandomPerson() {
     
