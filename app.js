@@ -1,14 +1,13 @@
 import express from 'express'
 import cors from 'cors'
 import path from'path';
-import {isHighScore, isSameRegion, getRandomPerson, getHardNationalities, getMediumNationalities, getEasyNationalities, getHelterNationalities } from './postgres.js';
+import {addHighScoreAndDeleteOldScore, getHighScores, isHighScore, isSameRegion, getRandomPerson, getHardNationalities, getMediumNationalities, getEasyNationalities, getHelterNationalities } from './postgres.js';
 import {encryptData, decryptPerson} from './crypt.js'
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-const SECRET = process.env.SECRET; //for prod only
-//const SECRET = "SECRET";
+const SECRET = process.env.SECRET || "SECRET";
 
 
 app.use(cors())
@@ -30,14 +29,38 @@ app.use(function (req, res, next) {
   }
 });
 
-app.post('/highscore', async function (req, res) {
+app.post('/get/highscore', async function (req, res) {
 
+  var difficulty = req.body.difficulty;
   var gameMode = req.body.gameMode;
   if ("helterSkelter" == gameMode) {
-    gameMode = "high"
-}
+      difficulty = "high"
+  }
     
-  await isHighScore(req.body.score, gameMode, req.body.difficulty).then(response => res.send(response));
+  await getHighScores(gameMode, difficulty).then(response => res.send(response.rows));
+});
+
+app.post('/is/highscore', async function (req, res) {
+
+  var difficulty = req.body.difficulty;
+  var gameMode = req.body.gameMode;
+  if ("helterSkelter" == gameMode) {
+      difficulty = "high"
+  }
+    
+  await isHighScore(req.body.score, gameMode, difficulty).then(response => res.send(response));
+});
+
+app.post('/highscore', async function (req, res) {
+
+  var difficulty = req.body.difficulty;
+  var gameMode = req.body.gameMode;
+  if ("helterSkelter" == gameMode) {
+      difficulty = "high"
+  }
+    
+  await addHighScoreAndDeleteOldScore(req.body.score, gameMode, difficulty, req.body.name)
+  .then(response => res.send(response));
 });
 
   app.post('/region', async function (req, res) {
