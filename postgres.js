@@ -41,7 +41,7 @@ export async function addHighScoreAndDeleteOldScore(score, gameMode, difficulty,
         return false;
     }
 
-    i
+    return false;
 }
 export async function isSameRegion(candidateNation, actualNation) {
 
