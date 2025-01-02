@@ -7,8 +7,8 @@ import {encryptData, decryptPerson} from './crypt.js'
 const app = express();
 const port = process.env.PORT || 8080;
 
-//const SECRET = process.env.SECRET; //for prod only
-const SECRET = "SECRET";
+const SECRET = process.env.SECRET; //for prod only
+//const SECRET = "SECRET";
 
 
 app.use(cors())

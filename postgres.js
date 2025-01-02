@@ -79,7 +79,6 @@ export async function getHardNationalities(person) {
 
 async function getNNationalities(person, numResults) {
 
-    //todo: decrypt person here :)
     var nat = decryptPerson(JSON.parse(person)).nationality;
     
     return await getAllNationalities()
