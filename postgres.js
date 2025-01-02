@@ -1,6 +1,6 @@
 import pg from 'pg'
 import 'dotenv/config'
-
+import { decryptPerson } from './crypt.js'
 
 const { Client } = pg
 
@@ -15,6 +15,34 @@ const client = new Client({
         console.log(error);
     }
 
+export async function isHighScore(score, gameMode, difficulty) {
+
+    const baseQuery = "Select score from highscores WHERE game_mode = $1 AND difficulty = $2"
+
+    return await client.query(baseQuery, [gameMode, difficulty])
+    .then(result => {
+        
+        if (null == result || null == result.rows || 0 == result.rows.length) {
+            console.error("Error checking if score was a highscore: " + gameMode + " " + difficulty)
+
+            return false;
+        }
+
+        var endIndex = result.rows.length-1;
+
+        return result.rows[endIndex].score < score
+    });
+}
+
+export async function addHighScoreAndDeleteOldScore(score, gameMode, difficulty, name) {
+    if (10 < name.length) {
+
+        console.error("Name for high score board too short");
+        return false;
+    }
+
+    i
+}
 export async function isSameRegion(candidateNation, actualNation) {
 
     const baseQuery = "SELECT region FROM nationalities WHERE nationality = $1 OR nationality = $2"
@@ -51,7 +79,8 @@ export async function getHardNationalities(person) {
 
 async function getNNationalities(person, numResults) {
 
-    var nat = JSON.parse(person).nationality;
+    //todo: decrypt person here :)
+    var nat = decryptPerson(JSON.parse(person)).nationality;
     
     return await getAllNationalities()
     .then(nats => {

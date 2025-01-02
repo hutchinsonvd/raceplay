@@ -1,14 +1,14 @@
 import express from 'express'
 import cors from 'cors'
 import path from'path';
-import {isSameRegion, getRandomPerson, getHardNationalities, getMediumNationalities, getEasyNationalities, getHelterNationalities } from './postgres.js';
-
+import {isHighScore, isSameRegion, getRandomPerson, getHardNationalities, getMediumNationalities, getEasyNationalities, getHelterNationalities } from './postgres.js';
+import {encryptData, decryptPerson} from './crypt.js'
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-const SECRET = process.env.SECRET; //for prod only
-//const SECRET = "SECRET";
+//const SECRET = process.env.SECRET; //for prod only
+const SECRET = "SECRET";
 
 
 app.use(cors())
@@ -22,15 +22,22 @@ app.use(function (req, res, next) {
   if (SECRET != req.headers["authorization"]) {
     res.sendStatus(401);
 
-    console.log("not authed " + SECRET + " vs " + req.headers["authorization"]);
-    console.log(req.headers);
-
     return;
   }
   else {
     //Carry on with the request chain
     next();
   }
+});
+
+app.post('/highscore', async function (req, res) {
+
+  var gameMode = req.body.gameMode;
+  if ("helterSkelter" == gameMode) {
+    gameMode = "high"
+}
+    
+  await isHighScore(req.body.score, gameMode, req.body.difficulty).then(response => res.send(response));
 });
 
   app.post('/region', async function (req, res) {
@@ -41,7 +48,7 @@ app.use(function (req, res, next) {
   app.get('/random', async function(req, res) {
 
     getRandomPerson()
-    .then(response => res.send(response));
+    .then(response => res.send(encryptData(response)));
   });
 
   app.post('/nationalities/hard', async function(req, res) {
