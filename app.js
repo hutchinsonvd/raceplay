@@ -37,7 +37,7 @@ app.post('/get/highscore', async function (req, res) {
       difficulty = "high"
   }
     
-  await getHighScores(gameMode, difficulty).then(response => res.send(response.rows));
+  await getHighScores(gameMode, difficulty).then(response => res.send(response));
 });
 
 app.post('/is/highscore', async function (req, res) {

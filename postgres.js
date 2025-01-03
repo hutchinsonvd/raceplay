@@ -19,15 +19,15 @@ const client = new Client({
 export async function isHighScore(score, gameMode, difficulty) {
 
     return getHighScores(gameMode, difficulty)
-    .then(result => {
+    .then(rows => {
         
-        if (null == result || null == result.rows || 0 == result.rows.length) {
+        if (null == rows || 0 == rows.length) {
             console.error("Error checking if score was a highscore: " + gameMode + " " + difficulty)
 
             return false;
         }
 
-        return result.rows[0].score < score
+        return rows[rows.length-1].score < score
     });
 }
 
@@ -40,15 +40,15 @@ export async function addHighScoreAndDeleteOldScore(score, gameMode, difficulty,
     }
 
     return getHighScores(gameMode, difficulty)
-    .then(result => {
-        if (null == result || null == result.rows || 0 == result.rows.length) {
-            console.error("Error adding score to high scores: " + gameMode + " " + difficulty)
+    .then(rows => {
+        if (null == rows || 0 == rows.length) {
+            console.error("Error adding score to high scores: " + gameMode + " " + difficulty + " for rows: " + rows)
 
             return false;
         }
        
-        var lowestScore = getLowestScore(result.rows);
-        var numResults = result.rows.length
+        var lowestScore = rows[rows.length-1];
+        var numResults = rows.length
 
         if (lowestScore.score > score && numResults >= 5) {
             console.error("Entered high score does not qualify: " + score + " vs high score on record: " + lowestScore.score)
@@ -68,7 +68,30 @@ export async function addHighScoreAndDeleteOldScore(score, gameMode, difficulty,
 export async function getHighScores(gameMode, difficulty) {
     const baseQuery = "Select * from highscores WHERE game_mode = $1 AND difficulty = $2";
 
-    return await client.query(baseQuery, [gameMode, difficulty]);
+    return await client.query(baseQuery, [gameMode, difficulty])
+    .then(result => {
+        if (null == result || null == result.rows || 0 == result.rows.length) {
+            console.error("Error getting high scores: " + gameMode + " " + difficulty)
+
+            return [];
+        }
+
+        var sortedRows = result.rows.sort((a, b) => b.score - a.score)
+        if (result.rows.length > 5) {
+            //sort and delete lower scores
+
+            console.log("here")
+            
+            for (var i = 5; i < sortedRows.length; i++) {
+                var idToDelete =sortedRows[i].id
+                deleteHighScore(idToDelete);
+            }
+
+            return sortedRows.slice(0, 5);
+        }
+
+        return sortedRows
+    });
 }
 
 export async function isSameRegion(candidateNation, actualNation) {

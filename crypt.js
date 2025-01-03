@@ -1,6 +1,6 @@
 import crypto from "crypto-js"
 
-const secret_key = process.env.SECRET_KEY //prod only
+const secret_key = process.env.SECRET_KEY || "abcd" //prod only
 //const secret_key = "abcd"
 
 
