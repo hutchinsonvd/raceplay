@@ -147,7 +147,13 @@ async function getNNationalities(person, numResults) {
                 results.push(nat);
             }
 
-            results.push(nats.at(randomIndices.at(i)));
+            var randomNat = nats.at(randomIndices.at(i));
+
+            if (nat == randomNat) {
+                randomNat = nats.at(Math.floor(Math.random() * (nats.length-1)));
+            }
+            
+            results.push(randomNat);
         }
 
         return results;
