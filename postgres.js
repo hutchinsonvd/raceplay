@@ -4,12 +4,15 @@ import { decryptPerson } from './crypt.js'
 
 const { Client } = pg
 
-const useSLL = process.env.SSL || true;
+const useSSL = process.env.SSL || true;
+
+console.log(useSSL)
+console.log(process.env.SSL)
 
 
 const client = new Client({
     connectionString: process.env.PGCONNECTIONSTRING,
-    ssl:useSLL})
+    ssl:useSSL})
 
     try {
         await client.connect()
