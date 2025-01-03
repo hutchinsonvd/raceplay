@@ -6,13 +6,9 @@ const { Client } = pg
 
 const useSSL = process.env.SSL || true;
 
-console.log(useSSL)
-console.log(process.env.SSL)
-
-
 const client = new Client({
     connectionString: process.env.PGCONNECTIONSTRING,
-    ssl:useSSL})
+    ssl:useSSL == 'false' ? false : true})
 
     try {
         await client.connect()
