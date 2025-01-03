@@ -111,6 +111,7 @@ export async function isSameRegion(candidateNation, actualNation) {
     })
 }
 
+//TODO: potentially nerf frequency of usa and uk
 export async function getRandomPerson() {
     
     return await client.query("SELECT * FROM people OFFSET floor(random() * 311503) LIMIT 1;")

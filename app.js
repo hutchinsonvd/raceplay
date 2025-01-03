@@ -33,7 +33,7 @@ app.post('/get/highscore', async function (req, res) {
 
   var difficulty = req.body.difficulty;
   var gameMode = req.body.gameMode;
-  if ("helterSkelter" == gameMode) {
+  if ("helterSkelter" == gameMode || "hard" == difficulty) {
       difficulty = "high"
   }
     
