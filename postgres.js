@@ -79,8 +79,6 @@ export async function getHighScores(gameMode, difficulty) {
         var sortedRows = result.rows.sort((a, b) => b.score - a.score)
         if (result.rows.length > 5) {
             //sort and delete lower scores
-
-            console.log("here")
             
             for (var i = 5; i < sortedRows.length; i++) {
                 var idToDelete =sortedRows[i].id
