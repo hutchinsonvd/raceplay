@@ -4,22 +4,22 @@ import { decryptPerson } from './crypt.js'
 
 const { Client } = pg
 
+const useSLL = process.env.SSL || true;
+
+
 const client = new Client({
     connectionString: process.env.PGCONNECTIONSTRING,
-    ssl:false})
-//ssl:true}) //local dev only
+    ssl:useSLL})
 
     try {
         await client.connect()
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 
 export async function isHighScore(score, gameMode, difficulty) {
 
-    const baseQuery = "Select score from highscores WHERE game_mode = $1 AND difficulty = $2"
-
-    return await client.query(baseQuery, [gameMode, difficulty])
+    return getHighScores(gameMode, difficulty)
     .then(result => {
         
         if (null == result || null == result.rows || 0 == result.rows.length) {
@@ -28,24 +28,54 @@ export async function isHighScore(score, gameMode, difficulty) {
             return false;
         }
 
-        var endIndex = result.rows.length-1;
-
-        return result.rows[endIndex].score < score
+        return result.rows[0].score < score
     });
 }
 
 export async function addHighScoreAndDeleteOldScore(score, gameMode, difficulty, name) {
-    if (10 < name.length) {
 
-        console.error("Name for high score board too short");
-        return false;
+    if (10 <= name.length) {
+
+        console.error("Name for high score board too long");
+        Promise.resolve(false);
     }
 
-    return false;
+    return getHighScores(gameMode, difficulty)
+    .then(result => {
+        if (null == result || null == result.rows || 0 == result.rows.length) {
+            console.error("Error adding score to high scores: " + gameMode + " " + difficulty)
+
+            return false;
+        }
+       
+        var lowestScore = getLowestScore(result.rows);
+        var numResults = result.rows.length
+
+        if (lowestScore.score > score && numResults >= 5) {
+            console.error("Entered high score does not qualify: " + score + " vs high score on record: " + lowestScore.score)
+
+            return false;
+        }
+
+        if (numResults >= 5) {
+            var idToDelete =lowestScore.id
+            deleteHighScore(idToDelete);
+        }
+
+        return addHighScore(score, gameMode, difficulty, name);    
+    });
 }
+
+export async function getHighScores(gameMode, difficulty) {
+    const baseQuery = "Select * from highscores WHERE game_mode = $1 AND difficulty = $2";
+
+    return await client.query(baseQuery, [gameMode, difficulty]);
+}
+
 export async function isSameRegion(candidateNation, actualNation) {
 
     const baseQuery = "SELECT region FROM nationalities WHERE nationality = $1 OR nationality = $2"
+
     return await client.query(baseQuery, [candidateNation, actualNation])
     .then(result => {
         if (null == result || null == result.rows || 0 == result.rows.length) {
@@ -142,8 +172,38 @@ export async function getHelterNationalities(person, score) {
     if (numToReturn > 9) {
         numToReturn = 9;
     }
-    console.log(score);
-    console.log(numToReturn);
+    console.debug(score);
+    console.debug(numToReturn);
 
     return getNNationalities(person, numToReturn);
+}
+
+
+async function addHighScore(score, gameMode, difficulty, name) {
+
+    const baseQuery = "INSERT into highscores (id, player_name, game_mode, difficulty, score) VALUES (DEFAULT, $1, $2, $3, $4)"
+    return await client.query(baseQuery, [name, gameMode, difficulty, score]);
+}
+
+async function deleteHighScore(id) {
+
+    const baseQuery = "Delete from highscores where id = $1";
+
+    return await client.query(baseQuery, [id]);
+}
+
+function getLowestScore(resultRows) {
+
+    var arr = resultRows.slice();
+
+    while(arr.length != 1) {
+        if (arr[0].score <= arr[1].score) {
+            arr.splice(1,1);
+        }
+        else {
+            arr.splice(0, 1);
+        }
+    }
+
+    return arr[0];
 }
