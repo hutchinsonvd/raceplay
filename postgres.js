@@ -33,7 +33,7 @@ export async function isHighScore(score, gameMode, difficulty) {
 
 export async function addHighScoreAndDeleteOldScore(score, gameMode, difficulty, name) {
 
-    if (10 <= name.length) {
+    if (15 <= name.length) {
 
         console.error("Name for high score board too long");
         Promise.resolve(false);
