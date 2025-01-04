@@ -15,6 +15,11 @@ export function encryptData(data) {
     }
   }
 
+export function decryptHeaders(header) {
+
+  return decrypt(header)
+}
+
   function encrypt(data) {
     return crypto.AES.encrypt(data, secret_key).toString();
   }
