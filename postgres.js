@@ -138,6 +138,10 @@ async function getNNationalities(person, numResults) {
 
         for (var i = 0; i < numResults; i++) {
             var rand = Math.floor(Math.random() * (nats.length-1));
+
+            while (randomIndices.includes(rand)) {
+                rand = Math.floor(Math.random() * (nats.length-1));
+            }
     
             randomIndices.push(rand);
         }

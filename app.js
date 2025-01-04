@@ -18,8 +18,6 @@ app.use(function (req, res, next) {
   //Here you would check for the user being authenticated
 
   //Unsure how you're actually checking this, so some psuedo code below
-  console.log(req.headers["authorization"])
-  console.log(decryptHeaders(req.headers["authorization"]))
   if (SECRET != decryptHeaders(req.headers["authorization"])) {
     res.sendStatus(401);
 
