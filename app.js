@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import path from'path';
 import {addHighScoreAndDeleteOldScore, getHighScores, isHighScore, isSameRegion, getRandomPerson, getHardNationalities, getMediumNationalities, getEasyNationalities, getHelterNationalities } from './postgres.js';
-import {encryptData, decryptPerson} from './crypt.js'
+import {encryptData, decryptHeaders} from './crypt.js'
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -18,7 +18,7 @@ app.use(function (req, res, next) {
   //Here you would check for the user being authenticated
 
   //Unsure how you're actually checking this, so some psuedo code below
-  if (SECRET != req.headers["authorization"]) {
+  if (SECRET != decryptHeaders(req.headers["authorization"])) {
     res.sendStatus(401);
 
     return;
